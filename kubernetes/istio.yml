@@ -1,0 +1,247 @@
+
+apiVersion: "networking.istio.io/v1alpha3"
+kind: "Gateway"
+metadata: 
+  name: untitled
+spec: 
+  selector: 
+    istio: "ingressgateway"
+  servers: 
+    - 
+      port: 
+        number: 80
+        name: "http"
+        protocol: "HTTP"
+      hosts: 
+        - "*"
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vsvc-dashboard
+spec:
+  gateways:
+  - untitled
+  hosts:
+  - "*"
+  http:
+  - name: primary       # referenced in canary.trafficRouting.istio.virtualService.routes
+    match: 
+    - uri: 
+        exact: "/dashboards"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: dashboard
+        subset: stable  # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      weight: 100
+    - destination:
+        host: dashboard
+        subset: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      weight: 0
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destrule-dashboard
+spec:
+  host: dashboard
+  subsets:
+  - name: canary   # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: Dashboard
+  - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: Dashboard
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vsvc-drive
+spec:
+  gateways:
+  - untitled
+  hosts:
+  - "*"
+  http:
+  - name: primary       # referenced in canary.trafficRouting.istio.virtualService.routes
+    match: 
+    - uri: 
+        exact: "/drives"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: drive
+        subset: stable  # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      weight: 100
+    - destination:
+        host: drive
+        subset: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      weight: 0
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destrule-drive
+spec:
+  host: drive
+  subsets:
+  - name: canary   # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: Drive
+  - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: Drive
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vsvc-index
+spec:
+  gateways:
+  - untitled
+  hosts:
+  - "*"
+  http:
+  - name: primary       # referenced in canary.trafficRouting.istio.virtualService.routes
+    match: 
+    - uri: 
+        exact: "/indices"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: index
+        subset: stable  # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      weight: 100
+    - destination:
+        host: index
+        subset: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      weight: 0
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destrule-index
+spec:
+  host: index
+  subsets:
+  - name: canary   # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: Index
+  - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: Index
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vsvc-videoProcess
+spec:
+  gateways:
+  - untitled
+  hosts:
+  - "*"
+  http:
+  - name: primary       # referenced in canary.trafficRouting.istio.virtualService.routes
+    match: 
+    - uri: 
+        exact: "/videoProcesses"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: videoProcess
+        subset: stable  # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      weight: 100
+    - destination:
+        host: videoProcess
+        subset: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      weight: 0
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destrule-videoProcess
+spec:
+  host: videoProcess
+  subsets:
+  - name: canary   # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: VideoProcess
+  - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: VideoProcess
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vsvc-notify
+spec:
+  gateways:
+  - untitled
+  hosts:
+  - "*"
+  http:
+  - name: primary       # referenced in canary.trafficRouting.istio.virtualService.routes
+    match: 
+    - uri: 
+        exact: "/notifies"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: notify
+        subset: stable  # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      weight: 100
+    - destination:
+        host: notify
+        subset: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      weight: 0
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destrule-notify
+spec:
+  host: notify
+  subsets:
+  - name: canary   # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: Notify
+  - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: Notify
+
